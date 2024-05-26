@@ -37,6 +37,10 @@ RUN useradd --create-home webtrackinguser
 USER webtrackinguser
 WORKDIR /home/webtrackinguser
 
+ENV VIRTUALENV=/home/webtrackinguser/venv
+RUN python3 -m venv $VIRTUALENV
+ENV PATH="$VIRTUALENV/bin:$PATH"
+
 COPY --from=builder /home/webtrackinguser/dist/page_tracker*.whl /home/webtrackinguser
 
 RUN python -m pip install --upgrade pip setuptools && \
