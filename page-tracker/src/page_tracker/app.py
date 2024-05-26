@@ -1,22 +1,23 @@
-# import the modules Flask, functools and Redis
-from flask import Flask
-from redis import Redis
+import os
 from functools import cache
 
-# instantiate a Flask application and a Redis client
-app = Flask(__name__)
-# redis = Redis()
+from flask import Flask
+from redis import Redis, RedisError
 
-# define a controller function to handle HTTP requests arriving at /
+app = Flask(__name__)
 
 
 @app.get("/")
 def index():
-    # page_views = redis.incr("page_views")
-    page_views = redis().incr("page_views")
-    return f"This page has been seen {page_views} times."
+    try:
+        page_views = redis().incr("page_views")
+    except RedisError:
+        app.logger.exception("Redis error")  # pylint: disable=E1101
+        return "Sorry, something went wrong \N{pensive face}", 500
+    else:
+        return f"This page has been seen {page_views} times."
 
 
 @cache
 def redis():
-    return Redis()
+    return Redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379"))
