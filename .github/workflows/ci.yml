@@ -30,7 +30,7 @@ jobs:
         uses: docker/build-push-action@v4.0.0
         if: ${{ github.event_name == 'push' }}
         with:
-          context: ./web
+          context: ./page-tracker/web
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/page-tracker:${{ github.sha }}
