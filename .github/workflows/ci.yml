@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+defaults:
+  run:
+    working-directory: page-tracker
+
 jobs:
   build:
     name: Build Docker image and run end-to-end tests
@@ -31,7 +35,7 @@ jobs:
         uses: docker/build-push-action@v4.0.0
         if: ${{ github.event_name == 'push' }}
         with:
-          context: ../page-tracker/web
+          context: ./web
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/page-tracker:${{ github.sha }}
